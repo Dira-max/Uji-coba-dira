@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dira Online Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background-color: #f8f8f8;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Header and Navigation */
+        header {
+            background-color: #fff;
+            padding: 15px 5%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo h1 {
+            margin: 0;
+            color: #4CAF50;
+            font-size: 1.8em;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #555;
+            padding: 10px 15px;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #4CAF50;
+        }
+
+        .keranjang-icon {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .keranjang-icon img {
+            width: 30px;
+            height: 30px;
+        }
+
+        #jumlah-keranjang {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #FF5722;
+            color: white;
+            border-radius: 50%;
+            padding: 3px 7px;
+            font-size: 0.8em;
+        }
+
+        /* Hero Section */
+        #hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://via.placeholder.com/1200x500?text=Susu+Segar') no-repeat center center/cover;
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+            animation: fadeIn 1.5s ease-out;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        #hero h2 {
+            font-size: 2.8em;
+            margin-bottom: 15px;
+        }
+
+        #hero p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .cta-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background-color: #45a049;
+            transform: translateY(-3px);
+        }
+
+        /* Produk Section */
+        #produk {
+            padding: 50px 5%;
+            text-align: center;
+        }
+
+        #produk h2 {
+            font-size: 2.2em;
+            margin-bottom: 40px;
+            color: #4CAF50;
+        }
+
+        .daftar-produk {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .produk-item {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .produk-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .produk-item img {
+            max-width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .produk-item h3 {
+            margin: 10px 0;
+            color: #333;
+            font-size: 1.3em;
+        }
+
+        .produk-item .harga {
+            font-size: 1.2em;
+            color: #FF5722;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .tambah-keranjang {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        .tambah-keranjang:hover {
+            background-color: #0056b3;
+        }
+
+        /* Animasi saat produk dimasukkan ke keranjang */
+        .produk-item::before {
+            content: 'Ditambahkan!';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(76, 175, 80, 0.9);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .produk-item.added::before {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Animasi keranjang (contoh bouncing icon) */
+        .keranjang-icon.bouncing {
+            animation: bounce 0.6s ease-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Keranjang Belanja Section */
+        #keranjang-belanja, #checkout-section {
+            padding: 50px 5%;
+            background-color: #fff;
+            margin: 30px 5% 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        #keranjang-belanja h2, #checkout-section h2 {
+            font-size: 2em;
+            margin-bottom: 30px;
+            color: #4CAF50;
+            text-align: center;
+        }
+
+        #item-keranjang div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed #eee;
+        }
+
+        #item-keranjang div:last-child {
+            border-bottom: none;
+        }
+
+        .total-harga {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: right;
+            margin-top: 20px;
+            color: #FF5722;
+        }
+
+        #checkout-button {
+            display: block;
+            width: fit-content;
+            margin: 30px auto 0;
+            background-color: #28a745;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #checkout-button:hover {
+            background-color: #218838;
+        }
+
+        /* Checkout Section */
+        #checkout-section h3 {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .metode-pembayaran label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .metode-pembayaran label:hover {
+            background-color: #f0f0f0;
+        }
+
+        .metode-pembayaran input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .konfirmasi-via {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .konfirmasi-via .btn-konfirmasi {
+            flex: 1;
+            min-width: 150px;
+            background-color: #17a2b8;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .konfirmasi-via .btn-konfirmasi:hover {
+            background-color: #138496;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 50px;
+            font-size: 0.9em;
+        }
+
+        /* Animasi Scroll (fade-in elements on scroll) */
+        .produk-item, #keranjang-belanja, #checkout-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .produk-item.visible, #keranjang-belanja.visible, #checkout-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Animasi Body Fade Out (untuk simulasi transisi halaman) */
+        body.fade-out {
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+        }
+
+        /* Responsif untuk layar kecil */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav ul {
+                margin-top: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            nav ul li a {
+                padding: 8px 12px;
+            }
+
+            .logo h1 {
+                font-size: 1.5em;
+            }
+
+            #hero h2 {
+                font-size: 2em;
+            }
+
+            #hero p {
+                font-size: 1em;
+            }
+
+            .daftar-produk {
+                grid-template-columns: 1fr;
+            }
+
+            .konfirmasi-via {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .konfirmasi-via .btn-konfirmasi {
+                width: 100%;
+                min-width: unset;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <h1>Dira Online Shop</h1>
+            </div>
+            <ul>
+                <li><a href="#produk">Produk</a></li>
+                <li><a href="#keranjang-belanja">Keranjang</a></li>
+                <li><a href="#checkout-section">Checkout</a></li>
+            </ul>
+            <div class="keranjang-icon">
+                <span id="jumlah-keranjang">0</span>
+                <img src="https://img.icons8.com/ios-filled/50/000000/shopping-cart.png" alt="Keranjang Belanja">
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero">
+            <h2>Selamat datang di toko dira</h2>
+            <p>Semua yang kamu cari ada di sini</p>
+            <button class="cta-button">Lihat Produk</button>
+        </section>
+
+        <section id="produk">
+            <h2>Produk Kami</h2>
+            <div class="daftar-produk">
+                <div class="produk-item">
+                    <img src="https://via.placeholder.com/300x200?text=Susu+Full+Cream" alt="Susu Full Cream">
+                    <h3>Susu Full Cream</h3>
+                    <p class="harga">Rp 25.000</p>
+                    <button class="tambah-keranjang" data-nama="Susu Full Cream" data-harga="25000">Tambah ke Keranjang</button>
+                </div>
+                <div class="produk-item">
+                    <img src="https://via.placeholder.com/300x200?text=Susu+Low+Fat" alt="Susu Low Fat">
+                    <h3>Susu Low Fat</h3>
+                    <p class="harga">Rp 23.000</p>
+                    <button class="tambah-keranjang" data-nama="Susu Low Fat" data-harga="23000">Tambah ke Keranjang</button>
+                </div>
+                <div class="produk-item">
+                    <img src="https://via.placeholder.com/300x200?text=Susu+Cokelat" alt="Susu Cokelat">
+                    <h3>Susu Cokelat</h3>
+                    <p class="harga">Rp 27.000</p>
+                    <button class="tambah-keranjang" data-nama="Susu Cokelat" data-harga="27000">Tambah ke Keranjang</button>
+                </div>
+                <div class="produk-item">
+                    <img src="https://via.placeholder.com/300x200?text=Susu+Plain" alt="Susu Plain">
+                    <h3>Susu Plain</h3>
+                    <p class="harga">Rp 22.000</p>
+                    <button class="tambah-keranjang" data-nama="Susu Plain" data-harga="22000">Tambah ke Keranjang</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="keranjang-belanja" style="display:none;">
+            <h2>Keranjang Belanja</h2>
+            <div id="item-keranjang">
+                <p>Keranjang Anda kosong.</p>
+            </div>
+            <p class="total-harga">Total: <span id="total-harga-keranjang">Rp 0</span></p>
+            <button id="checkout-button">Lanjutkan ke Pembayaran</button>
+        </section>
+
+        <section id="checkout-section" style="display:none;">
+            <h2>Checkout</h2>
+            <p>Pilih metode pembayaran dan kontak untuk konfirmasi pesanan.</p>
+
+            <h3>Metode Pembayaran:</h3>
+            <div class="metode-pembayaran">
+                <label><input type="radio" name="payment-method" value="dana" checked> DANA</label>
+                <label><input type="radio" name="payment-method" value="ovo"> OVO</label>
+                <label><input type="radio" name="payment-method" value="gopay"> Gopay</label>
+                <label><input type="radio" name="payment-method" value="qris"> QRIS</label>
+                <label><input type="radio" name="payment-method" value="transfer"> Transfer Bank</label>
+            </div>
+            <p>Detail pembayaran akan diberikan setelah checkout.</p>
+
+            <h3>Konfirmasi Pesanan via:</h3>
+            <div class="konfirmasi-via">
+                <button id="checkout-wa" class="btn-konfirmasi">Checkout via WhatsApp</button>
+                <button id="checkout-telegram" class="btn-konfirmasi">Checkout via Telegram</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Dira Online Shop. Semua Hak Dilindungi.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tambahKeranjangButtons = document.querySelectorAll('.tambah-keranjang');
+            const jumlahKeranjangSpan = document.getElementById('jumlah-keranjang');
+            const itemKeranjangDiv = document.getElementById('item-keranjang');
+            const totalHargaKeranjangSpan = document.getElementById('total-harga-keranjang');
+            const keranjangIcon = document.querySelector('.keranjang-icon');
+            const checkoutButton = document.getElementById('checkout-button');
+            const checkoutWaButton = document.getElementById('checkout-wa');
+            const checkoutTelegramButton = document.getElementById('checkout-telegram');
+            const heroCtaButton = document.querySelector('#hero .cta-button');
+
+            let keranjang = [];
+
+            // Fungsi untuk memperbarui tampilan keranjang
+            function updateKeranjangDisplay() {
+                itemKeranjangDiv.innerHTML = '';
+                let totalHarga = 0;
+                if (keranjang.length === 0) {
+                    itemKeranjangDiv.innerHTML = '<p>Keranjang Anda kosong.</p>';
+                } else {
+                    keranjang.forEach(item => {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.innerHTML = `
+                            <span>${item.nama} (x${item.quantity})</span>
+                            <span>Rp ${(item.harga * item.quantity).toLocaleString('id-ID')}</span>
+                        `;
+                        itemKeranjangDiv.appendChild(itemDiv);
+                        totalHarga += item.harga * item.quantity;
+                    });
+                }
+                jumlahKeranjangSpan.textContent = keranjang.reduce((sum, item) => sum + item.quantity, 0);
+                totalHargaKeranjangSpan.textContent = `Rp ${totalHarga.toLocaleString('id-ID')}`;
+            }
+
+            // Animasi saat produk ditambahkan ke keranjang
+            tambahKeranjangButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const namaProduk = button.dataset.nama;
+                    const hargaProduk = parseInt(button.dataset.harga);
+                    const produkItem = event.target.closest('.produk-item');
+
+                    // Animasi "Ditambahkan!" pada produk
+                    produkItem.classList.add('added');
+                    setTimeout(() => {
+                        produkItem.classList.remove('added');
+                    }, 800); // Durasi animasi
+
+                    // Tambahkan ke array keranjang
+                    const existingItem = keranjang.find(item => item.nama === namaProduk);
+                    if (existingItem) {
+                        existingItem.quantity++;
+                    } else {
+                        keranjang.push({ nama: namaProduk, harga: hargaProduk, quantity: 1 });
+                    }
+
+                    // Animasi bouncing pada icon keranjang
+                    keranjangIcon.classList.add('bouncing');
+                    setTimeout(() => {
+                        keranjangIcon.classList.remove('bouncing');
+                    }, 600);
+
+                    updateKeranjangDisplay();
+                    // Tampilkan keranjang jika belum terlihat, gulir ke keranjang
+                    const keranjangSection = document.getElementById('keranjang-belanja');
+                    if (keranjangSection.style.display === 'none' || !keranjangSection.style.display) {
+                        keranjangSection.style.display = 'block';
+                        keranjangSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+            // Tampilkan/sembunyikan keranjang saat icon diklik
+            keranjangIcon.addEventListener('click', () => {
+                const keranjangSection = document.getElementById('keranjang-belanja');
+                if (keranjangSection.style.display === 'block') {
+                    keranjangSection.style.display = 'none';
+                } else {
+                    keranjangSection.style.display = 'block';
+                    keranjangSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+
+            // Tombol CTA di Hero section
+            heroCtaButton.addEventListener('click', () => {
+                document.getElementById('produk').scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // Tombol checkout di keranjang
+            checkoutButton.addEventListener('click', () => {
+                document.getElementById('keranjang-belanja').style.display = 'none';
+                document.getElementById('checkout-section').style.display = 'block';
+                // Gulir ke bagian checkout
+                document.getElementById('checkout-section').scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // Fungsi untuk membuat pesan checkout
+            function generateCheckoutMessage(platform) {
+                if (keranjang.length === 0) {
+                    alert('Keranjang Anda kosong. Silakan tambahkan produk terlebih dahulu.');
+                    return;
+                }
+
+                let pesan = `Halo, saya ingin memesan Produk Dari Toko Dira Online shop Anda.\n\n`;
+                pesan += `Daftar Pesanan:\n`;
+                let total = 0;
+
+                keranjang.forEach(item => {
+                    pesan += `- ${item.nama} (${item.quantity}x) = Rp ${(item.harga * item.quantity).toLocaleString('id-ID')}\n`;
+                    total += item.harga * item.quantity;
+                });
+
+                pesan += `\nTotal Harga: Rp ${total.toLocaleString('id-ID')}\n\n`;
+
+                const metodePembayaran = document.querySelector('input[name="payment-method"]:checked');
+                if (metodePembayaran) {
+                    pesan += `Metode Pembayaran Pilihan: ${metodePembayaran.value.toUpperCase()}\n\n`;
+                    if (metodePembayaran.value === 'transfer') {
+                        pesan += `*Mohon transfer ke rekening BCA 1234567890 a.n. Nama Pemilik Rekening*\n`;
+                    } else if (metodePembayaran.value === 'qris') {
+                        pesan += `*QRIS akan dikirimkan setelah konfirmasi pesanan.*\n`;
+                    }
+                } else {
+                    pesan += `*Mohon informasikan metode pembayaran pilihan Anda (DANA/OVO/Gopay/QRIS/Transfer Bank)*\n\n`;
+                }
+
+                pesan += `Terima kasih!`;
+
+                const encodedPesan = encodeURIComponent(pesan);
+                if (platform === 'wa') {
+                    // Ganti dengan nomor WhatsApp Anda
+                    window.open(`https://wa.me/6287784555835?text=${encodedPesan}`, '_blank');
+                } else if (platform === 'telegram') {
+                    // Ganti dengan username Telegram Anda (contoh: your_telegram_username)
+                    window.open(`https://t.me/your_telegram_Dedexzs?text=${encodedPesan}`, '_blank');
+                }
+            }
+
+            checkoutWaButton.addEventListener('click', () => generateCheckoutMessage('wa'));
+            checkoutTelegramButton.addEventListener('click', () => generateCheckoutMessage('telegram'));
+
+            // Animasi scroll ke bawah (fade-in elements)
+            const sectionsToAnimate = document.querySelectorAll('.produk-item, #keranjang-belanja, #checkout-section');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            sectionsToAnimate.forEach(section => {
+                observer.observe(section);
+            });
+
+            // Animasi saat pindah halaman (untuk simulasi transisi antar bagian)
+            document.querySelectorAll('nav a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+
+                    if (targetElement) {
+                        document.body.classList.add('fade-out');
+                        setTimeout(() => {
+                            targetElement.scrollIntoView({ behavior: 'smooth' });
+                            setTimeout(() => {
+                                document.body.classList.remove('fade-out');
+                            }, 500);
+                        }, 500);
+                    }
+                });
+            });
+
+            // Inisialisasi tampilan keranjang saat halaman dimuat
+            updateKeranjangDisplay();
+        });
+    </script>
+</body>
+</html>
